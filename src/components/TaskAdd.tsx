@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 export default ({ onTaskAdd }: { onTaskAdd: (description: string) => void }) => {
-  const [description, setDescription]: [string, (description: string) => void] = useState('')
+  const [description, setDescription] = useState<string>('')
 
   const handleDescriptionChange = (event: React.FormEvent<HTMLInputElement>) => {
     setDescription(event.currentTarget.value)
