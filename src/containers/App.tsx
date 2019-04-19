@@ -23,51 +23,54 @@ export default () => {
           }),
         )
       })
-      .catch(error => console.error('Error getting documents:', error))
+      .catch(error => console.error('Error getting documents: ', error))
   }, [])
 
-  const handleTaskStatusChange = (task: Task): void => {
+  const handleTaskStatusChange = async (task: Task): Promise<void> => {
     const taskIndex: number = tasks.findIndex(({ id }) => id === task.id)
-
     const update = { isDone: !task.isDone }
     const updatedTask: Task = { ...task, ...update }
 
-    db.collection('tasks')
-      .doc(task.id)
-      .update(update)
-      .then(() => {
-        const tasksCopy: Task[] = [...tasks]
-        tasksCopy.splice(taskIndex, 1, updatedTask)
-        setTasks(tasksCopy)
-      })
-  }
-
-  const handleTaskDelete = (taskId: string): void => {
-    db.collection('tasks')
-      .doc(taskId)
-      .delete()
-      .then(() => {
-        const taskIndex: number = tasks.findIndex(({ id }) => id === taskId)
-        const tasksCopy: Task[] = [...tasks]
-        tasksCopy.splice(taskIndex, 1)
-        setTasks(tasksCopy)
-      })
-      .catch(error => console.error('Error removing document: ', error))
-  }
-
-  const handleTaskAdd = (description: string): void => {
-    const newTask = {
-      description,
-      isDone: false,
+    try {
+      await db
+        .collection('tasks')
+        .doc(task.id)
+        .update(update)
+      const tasksCopy: Task[] = [...tasks]
+      tasksCopy.splice(taskIndex, 1, updatedTask)
+      setTasks(tasksCopy)
+    } catch (error) {
+      console.error('Error updating document: ', error)
     }
+  }
 
-    db.collection('tasks')
-      .add(newTask)
-      .then(docRef => {
-        const updatedTasks: Task[] = [...tasks, { id: docRef.id, ...newTask }]
-        setTasks(updatedTasks)
-      })
-      .catch(error => console.error('Error adding document: ', error))
+  const handleTaskDelete = async (taskId: string): Promise<void> => {
+    try {
+      await db
+        .collection('tasks')
+        .doc(taskId)
+        .delete()
+      const taskIndex: number = tasks.findIndex(({ id }) => id === taskId)
+      const tasksCopy: Task[] = [...tasks]
+      tasksCopy.splice(taskIndex, 1)
+      setTasks(tasksCopy)
+    } catch (error) {
+      console.error('Error removing document: ', error)
+    }
+  }
+
+  const handleTaskAdd = async (description: string): Promise<void> => {
+    try {
+      const newTask = {
+        description,
+        isDone: false,
+      }
+      const docRef = await db.collection('tasks').add(newTask)
+      const updatedTasks: Task[] = [...tasks, { id: docRef.id, ...newTask }]
+      setTasks(updatedTasks)
+    } catch (error) {
+      console.error('Error adding document: ', error)
+    }
   }
 
   return (
