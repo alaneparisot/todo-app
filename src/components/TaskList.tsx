@@ -5,10 +5,12 @@ import TaskListItem from './TaskListItem'
 
 export default ({
   tasks,
+  isLoading,
   onTaskStatusChange,
   onTaskDelete,
 }: {
   tasks: Task[]
+  isLoading: boolean
   onTaskStatusChange: (task: Task) => void
   onTaskDelete: (taskId: string) => void
 }) => {
@@ -23,5 +25,19 @@ export default ({
     ),
   )
 
-  return tasks.length > 0 ? <ul>{taskListItems}</ul> : <em>Add a new task!</em>
+  return (
+    <>
+      <h2>Tasks</h2>
+
+      {isLoading ? (
+        <p>🚚 Loading...</p>
+      ) : tasks.length > 0 ? (
+        <ul>{taskListItems}</ul>
+      ) : (
+        <p>
+          Seems like you achieved all your tasks 🎉 <em>Add a new one!</em>
+        </p>
+      )}
+    </>
+  )
 }

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 import Task from '../types/Task'
 
@@ -12,10 +13,8 @@ export default ({
   onTaskDelete: (taskId: string) => void
 }) => (
   <li>
-    <label>
-      {task.description}
-      <input type='checkbox' checked={task.isDone} onChange={() => onTaskStatusChange(task)} />
-    </label>
+    <Link to={`/tasks/${task.id}`}>{task.description}</Link>
+    <input type='checkbox' checked={task.isDone} onChange={() => onTaskStatusChange(task)} />
     {task.isDone && <button onClick={() => onTaskDelete(task.id)}>Delete</button>}
   </li>
 )
