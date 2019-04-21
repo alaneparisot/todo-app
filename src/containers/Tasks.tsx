@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { lazy, useEffect, useState, Suspense } from 'react'
 import { match as Match, Route, Switch } from 'react-router-dom'
 import { History } from 'history'
 
 import Task from '../types/Task'
 import TaskList from '../components/TaskList'
-import TaskCreation from '../components/TaskCreation'
-import TaskDetail from '../components/TaskDetail'
 import db from '../db/firebase'
+
+const TaskCreation = lazy(() => import('../components/TaskCreation'))
+const TaskDetail = lazy(() => import('../components/TaskDetail'))
 
 export default ({ history, match }: { history: History; match: Match }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -89,13 +90,25 @@ export default ({ history, match }: { history: History; match: Match }) => {
     </>
   )
 
-  const taskCreation = <TaskCreation onTaskCreate={handleTaskCreation} />
+  const loading = <p>🚚 Loading...</p>
+
+  const suspendedTaskCreation = (
+    <Suspense fallback={loading}>
+      <TaskCreation onTaskCreate={handleTaskCreation} />
+    </Suspense>
+  )
+
+  const buildSuspendedTaskDetail = (props: any) => (
+    <Suspense fallback={loading}>
+      <TaskDetail {...props} />
+    </Suspense>
+  )
 
   return (
     <Switch>
       <Route path={match.url} exact render={() => taskList} />
-      <Route path={`${match.url}/new`} render={() => taskCreation} />
-      <Route path={`${match.url}/:id`} component={TaskDetail} />
+      <Route path={`${match.url}/new`} render={() => suspendedTaskCreation} />
+      <Route path={`${match.url}/:id`} render={buildSuspendedTaskDetail} />
     </Switch>
   )
 }

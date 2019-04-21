@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 
 import Task from '../types/Task'
-import TaskListItem from './TaskListItem'
+
+const TaskListItem = lazy(() => import('./TaskListItem'))
 
 export default ({
   tasks,
@@ -32,7 +33,9 @@ export default ({
       {isLoading ? (
         <p>🚚 Loading...</p>
       ) : tasks.length > 0 ? (
-        <ul>{taskListItems}</ul>
+        <Suspense fallback={<p>🚚 Loading...</p>}>
+          <ul>{taskListItems}</ul>
+        </Suspense>
       ) : (
         <p>
           Seems like you achieved all your tasks 🎉 <em>Add a new one!</em>
