@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, match as Match } from 'react-router-dom'
 
 import Task from '../types/Task'
+import Loading from '../components/Loading'
 import db from '../db/firebase'
 
 type Props = {
@@ -41,7 +42,7 @@ export default ({ match }: Props) => {
           </li>
         </ul>
       ) : (
-        <p>{selectedTask === undefined ? '🚚 Loading...' : "Task can't be found... 😔"}</p>
+        <p>{selectedTask === undefined ? <Loading /> : 'Task not found... 😔'}</p>
       )}
 
       <Link to='/tasks'>Go to task list</Link>

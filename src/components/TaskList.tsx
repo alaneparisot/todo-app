@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react'
 
 import Task from '../types/Task'
+import Loading from '../components/Loading'
 
 const TaskListItem = lazy(() => import('./TaskListItem'))
 
@@ -28,9 +29,9 @@ export default ({ tasks, isLoading, onTaskStatusChange, onTaskDelete }: Props) =
       <h2>Tasks</h2>
 
       {isLoading ? (
-        <p>🚚 Loading...</p>
+        <Loading />
       ) : tasks.length > 0 ? (
-        <Suspense fallback={<p>🚚 Loading...</p>}>
+        <Suspense fallback={<Loading />}>
           <ul>{taskListItems}</ul>
         </Suspense>
       ) : (

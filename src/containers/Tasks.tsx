@@ -4,6 +4,7 @@ import { History } from 'history'
 
 import Task from '../types/Task'
 import TaskList from '../components/TaskList'
+import Loading from '../components/Loading'
 import db from '../db/firebase'
 
 const TaskCreation = lazy(() => import('../components/TaskCreation'))
@@ -95,16 +96,14 @@ export default ({ history, match }: Props) => {
     </>
   )
 
-  const loading = <p>🚚 Loading...</p>
-
   const suspendedTaskCreation = (
-    <Suspense fallback={loading}>
+    <Suspense fallback={<Loading />}>
       <TaskCreation onTaskCreate={handleTaskCreation} />
     </Suspense>
   )
 
   const buildSuspendedTaskDetail = (props: any) => (
-    <Suspense fallback={loading}>
+    <Suspense fallback={<Loading />}>
       <TaskDetail {...props} />
     </Suspense>
   )
