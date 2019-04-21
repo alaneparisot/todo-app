@@ -1,47 +1,58 @@
 import React, { lazy, useEffect, useState, Suspense } from 'react'
 import { match as Match, Route, Switch } from 'react-router-dom'
 import { History } from 'history'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
 
 import Task from '../types/Task'
 import TaskList from '../components/TaskList'
 import Loading from '../components/Loading'
+import StoreState from '../types/StoreState'
+import * as taskActions from '../actions/taskActions'
 import db from '../db/firebase'
 
 const TaskCreation = lazy(() => import('../components/TaskCreation'))
 const TaskDetail = lazy(() => import('../components/TaskDetail'))
 
 type Props = {
+  tasks: Task[]
+  onAddTask: (task: Task) => taskActions.AddTask
+  onDeleteTask: (id: string) => taskActions.DeleteTask
+  onSetTasks: (tasks: Task[]) => taskActions.SetTasks
+  onToggleTask: (id: string, isDone: boolean) => taskActions.ToggleTask
   history: History
   match: Match
 }
 
-export default ({ history, match }: Props) => {
+const Tasks = ({
+  tasks,
+  onAddTask,
+  onDeleteTask,
+  onSetTasks,
+  onToggleTask,
+  history,
+  match,
+}: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [tasks, setTasks] = useState<Task[]>([])
 
   useEffect(() => {
     db.collection('tasks')
       .get()
       .then(querySnapshot => {
-        setTasks(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Task)))
+        onSetTasks(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Task)))
         setIsLoading(false)
       })
       .catch(error => console.error('Error getting documents: ', error))
   }, [])
 
   const handleTaskStatusChange = async (task: Task): Promise<void> => {
-    const taskIndex: number = tasks.findIndex(({ id }) => id === task.id)
-    const update = { isDone: !task.isDone }
-    const updatedTask: Task = { ...task, ...update }
-
+    const isDone = !task.isDone
     try {
       await db
         .collection('tasks')
         .doc(task.id)
-        .update(update)
-      const tasksCopy: Task[] = [...tasks]
-      tasksCopy.splice(taskIndex, 1, updatedTask)
-      setTasks(tasksCopy)
+        .update({ isDone })
+      onToggleTask(task.id, isDone)
     } catch (error) {
       console.error('Error updating document: ', error)
     }
@@ -53,10 +64,7 @@ export default ({ history, match }: Props) => {
         .collection('tasks')
         .doc(taskId)
         .delete()
-      const taskIndex: number = tasks.findIndex(({ id }) => id === taskId)
-      const tasksCopy: Task[] = [...tasks]
-      tasksCopy.splice(taskIndex, 1)
-      setTasks(tasksCopy)
+      onDeleteTask(taskId)
     } catch (error) {
       console.error('Error removing document: ', error)
     }
@@ -69,8 +77,7 @@ export default ({ history, match }: Props) => {
         isDone: false,
       }
       const docRef = await db.collection('tasks').add(newTask)
-      const updatedTasks: Task[] = [...tasks, { id: docRef.id, ...newTask }]
-      setTasks(updatedTasks)
+      onAddTask({ id: docRef.id, ...newTask })
       history.push(match.url)
     } catch (error) {
       console.error('Error adding document: ', error)
@@ -116,3 +123,19 @@ export default ({ history, match }: Props) => {
     </Switch>
   )
 }
+
+const mapStateToProps = (state: StoreState) => ({
+  tasks: state.task.tasks,
+})
+
+const mapDispatchToProps = (dispatch: Dispatch<taskActions.TaskAction>) => ({
+  onAddTask: (task: Task) => dispatch(taskActions.addTask(task)),
+  onDeleteTask: (id: string) => dispatch(taskActions.deleteTask(id)),
+  onSetTasks: (tasks: Task[]) => dispatch(taskActions.setTasks(tasks)),
+  onToggleTask: (id: string, isDone: boolean) => dispatch(taskActions.toggleTask(id, isDone)),
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Tasks)

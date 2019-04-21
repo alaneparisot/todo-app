@@ -9,6 +9,7 @@ export default () => (
     <p>It's a sandbox application which implements:</p>
     <ul>
       <li>React 16+ with Hooks, Suspense</li>
+      <li>Redux</li>
       <li>TypeScript</li>
       <li>async/await</li>
       <li>Firebase's Cloud Firestore</li>
