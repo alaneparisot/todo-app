@@ -4,17 +4,14 @@ import Task from '../types/Task'
 
 const TaskListItem = lazy(() => import('./TaskListItem'))
 
-export default ({
-  tasks,
-  isLoading,
-  onTaskStatusChange,
-  onTaskDelete,
-}: {
+type Props = {
   tasks: Task[]
   isLoading: boolean
   onTaskStatusChange: (task: Task) => void
   onTaskDelete: (taskId: string) => void
-}) => {
+}
+
+export default ({ tasks, isLoading, onTaskStatusChange, onTaskDelete }: Props) => {
   const taskListItems: JSX.Element[] = tasks.map(
     (task: Task): JSX.Element => (
       <TaskListItem

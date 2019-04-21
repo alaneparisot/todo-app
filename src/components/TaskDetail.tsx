@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { Link, match } from 'react-router-dom'
+import { Link, match as Match } from 'react-router-dom'
 
 import Task from '../types/Task'
 import db from '../db/firebase'
 
-export default ({ match }: { match: match<{ id: string }> }) => {
+type Props = {
+  match: Match<{ id: string }>
+}
+
+export default ({ match }: Props) => {
   const [selectedTask, setSelectedTask] = useState<Task | null>()
 
   useEffect(() => {

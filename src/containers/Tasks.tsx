@@ -9,7 +9,12 @@ import db from '../db/firebase'
 const TaskCreation = lazy(() => import('../components/TaskCreation'))
 const TaskDetail = lazy(() => import('../components/TaskDetail'))
 
-export default ({ history, match }: { history: History; match: Match }) => {
+type Props = {
+  history: History
+  match: Match
+}
+
+export default ({ history, match }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [tasks, setTasks] = useState<Task[]>([])
 

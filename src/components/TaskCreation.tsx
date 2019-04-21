@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-export default ({ onTaskCreate }: { onTaskCreate: (description: string) => void }) => {
+type Props = {
+  onTaskCreate: (description: string) => void
+}
+
+export default ({ onTaskCreate }: Props) => {
   const [description, setDescription] = useState<string>('')
   const [isCreating, setIsCreating] = useState<boolean>(false)
 
@@ -14,7 +18,7 @@ export default ({ onTaskCreate }: { onTaskCreate: (description: string) => void 
     onTaskCreate(description)
     setDescription('')
     setIsCreating(true)
-    // Redirected to /tasks by parent's method
+    // Once task is saved in DB, user is redirected to /tasks by Tasks:handleTaskCreation()
   }
 
   const handleReset = () => {
