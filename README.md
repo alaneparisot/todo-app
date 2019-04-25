@@ -1,44 +1,73 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Todo App
 
-## Available Scripts
+A simple todo app to **discover, study, and master how to build enterprise-ready applications with React**.
 
-In the project directory, you can run:
+My purpose is to write a **React Cookbook** for my future self. Therefore, I'll try, as far as my knowledge and time allow me, to respect and embrase best practices, unit testing, and documentation.
 
-### `npm start`
+Here are the topics I planned to cover:
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- [x] React 16+
+  - [x] Hooks
+    - [x] `useState`
+    - [x] `useEffect`
+    - [ ] `useContext`
+    - [ ] `useReducer`
+    - [ ] `useRef`
+    - [x] `React.Memo`
+- [x] TypeScript
+- [x] HTTP Requests (with Firebase's Cloud Firestore)
+- [x] Routing
+  - [x] Lazy Loading (with `React.Suspense`)
+- [x] Redux
+  - [ ] Redux Thunk
+  - [ ] Redux Saga
+- [ ] Unit Testing
+- [ ] Documentation
+- [ ] Forms (with Formik)
+- [ ] Authentication
+- [ ] i18n
+- [ ] Performance Optimization
+- [ ] Styled Components
+- [ ] Material-UI
+- [ ] Animations
+- [ ] Next.js
+- [ ] Gatsby
+- [ ] Preact
+- [ ] React Native
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+Oh! I've almost forgot, any suggestion would be greatly appreciated 😊
 
-### `npm test`
+## Installation
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Clone this repository.
 
-### `npm run build`
+### Dependency Installation
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+$ yarn install
+```
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+### Firebase Configuration
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+To execute this project, you must have a Firebase account and project.
 
-### `npm run eject`
+Copy your project's credentials from Firebase, and add a JSON file named `firebaseConfig.json` in `src/db` from your cloned repository.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+This file should have this form:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```jsonld
+{
+  "apiKey": "...",
+  "authDomain": "...",
+  "databaseURL": "...",
+  "projectId": "...",
+  "storageBucket": "...",
+  "messagingSenderId": "..."
+}
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Start
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+$ yarn start
+```
