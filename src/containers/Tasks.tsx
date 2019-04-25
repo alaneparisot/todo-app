@@ -2,86 +2,49 @@ import React, { lazy, useEffect, useState, Suspense } from 'react'
 import { match as Match, Route, Switch } from 'react-router-dom'
 import { History } from 'history'
 import { connect } from 'react-redux'
-import { Dispatch } from 'redux'
+import { ThunkDispatch } from 'redux-thunk'
 
 import Task from '../types/Task'
 import TaskList from '../components/TaskList'
 import Loading from '../components/Loading'
 import StoreState from '../types/StoreState'
 import * as taskActions from '../actions/taskActions'
-import db from '../db/firebase'
 
 const TaskCreation = lazy(() => import('../components/TaskCreation'))
 const TaskDetail = lazy(() => import('../components/TaskDetail'))
 
 type Props = {
   tasks: Task[]
-  onAddTask: (task: Task) => taskActions.AddTask
-  onDeleteTask: (id: string) => taskActions.DeleteTask
-  onSetTasks: (tasks: Task[]) => taskActions.SetTasks
-  onToggleTask: (id: string, isDone: boolean) => taskActions.ToggleTask
+  onAddTask: (description: string) => Promise<void>
+  onDeleteTask: (task: Task) => Promise<void>
+  onGetTasks: () => Promise<void>
+  onToggleTask: (task: Task) => Promise<void>
   history: History
   match: Match
 }
 
-const Tasks = ({
-  tasks,
-  onAddTask,
-  onDeleteTask,
-  onSetTasks,
-  onToggleTask,
-  history,
-  match,
-}: Props) => {
+const Tasks = ({ tasks, onAddTask, onDeleteTask, onGetTasks, onToggleTask, history, match }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
-    db.collection('tasks')
-      .get()
-      .then(querySnapshot => {
-        onSetTasks(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Task)))
-        setIsLoading(false)
-      })
-      .catch(error => console.error('Error getting documents: ', error))
+    const init = async () => {
+      await onGetTasks()
+      setIsLoading(false)
+    }
+    init()
   }, [])
 
   const handleTaskStatusChange = async (task: Task): Promise<void> => {
-    const isDone = !task.isDone
-    try {
-      await db
-        .collection('tasks')
-        .doc(task.id)
-        .update({ isDone })
-      onToggleTask(task.id, isDone)
-    } catch (error) {
-      console.error('Error updating document: ', error)
-    }
+    await onToggleTask(task)
   }
 
-  const handleTaskDelete = async (taskId: string): Promise<void> => {
-    try {
-      await db
-        .collection('tasks')
-        .doc(taskId)
-        .delete()
-      onDeleteTask(taskId)
-    } catch (error) {
-      console.error('Error removing document: ', error)
-    }
+  const handleTaskDelete = async (task: Task): Promise<void> => {
+    await onDeleteTask(task)
   }
 
   const handleTaskCreation = async (description: string): Promise<void> => {
-    try {
-      const newTask = {
-        description,
-        isDone: false,
-      }
-      const docRef = await db.collection('tasks').add(newTask)
-      onAddTask({ id: docRef.id, ...newTask })
-      history.push(match.url)
-    } catch (error) {
-      console.error('Error adding document: ', error)
-    }
+    await onAddTask(description)
+    history.push(match.url)
   }
 
   const handleCreateNewTaskClick = () => {
@@ -97,9 +60,11 @@ const Tasks = ({
         onTaskDelete={handleTaskDelete}
       />
 
-      <button type='button' onClick={handleCreateNewTaskClick}>
-        Create a new task
-      </button>
+      <p>
+        <button type="button" onClick={handleCreateNewTaskClick}>
+          Create a new task
+        </button>
+      </p>
     </>
   )
 
@@ -128,11 +93,11 @@ const mapStateToProps = (state: StoreState) => ({
   tasks: state.task.tasks,
 })
 
-const mapDispatchToProps = (dispatch: Dispatch<taskActions.TaskAction>) => ({
-  onAddTask: (task: Task) => dispatch(taskActions.addTask(task)),
-  onDeleteTask: (id: string) => dispatch(taskActions.deleteTask(id)),
-  onSetTasks: (tasks: Task[]) => dispatch(taskActions.setTasks(tasks)),
-  onToggleTask: (id: string, isDone: boolean) => dispatch(taskActions.toggleTask(id, isDone)),
+const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, taskActions.TaskAction>) => ({
+  onAddTask: (description: string) => dispatch(taskActions.addTask(description)),
+  onDeleteTask: (task: Task) => dispatch(taskActions.deleteTask(task)),
+  onGetTasks: () => dispatch(taskActions.getTasks()),
+  onToggleTask: (task: Task) => dispatch(taskActions.toggleTask(task)),
 })
 
 export default connect(

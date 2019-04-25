@@ -3,7 +3,7 @@ import { Link, match as Match } from 'react-router-dom'
 
 import Task from '../types/Task'
 import Loading from '../components/Loading'
-import db from '../db/firebase'
+import db from '../db'
 
 type Props = {
   match: Match<{ id: string }>

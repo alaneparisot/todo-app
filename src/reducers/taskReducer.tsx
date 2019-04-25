@@ -20,7 +20,7 @@ export default ((state = initialState, action): TaskState => {
         ...state,
         tasks: state.tasks.filter((task: Task) => task.id !== action.payload.id),
       }
-    case taskActions.SET_TASKS:
+    case taskActions.GET_TASKS:
       return {
         ...state,
         tasks: action.payload.tasks,

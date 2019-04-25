@@ -1,7 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { combineReducers, compose, createStore } from 'redux'
+import { combineReducers, compose, createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
+import thunk from 'redux-thunk'
 
 import App from './containers/App'
 import taskReducer from './reducers/taskReducer'
@@ -10,15 +11,17 @@ import './index.css'
 
 declare global {
   interface Window {
-    __REDUX_DEVTOOLS_EXTENSION__: typeof compose
+    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: typeof compose
   }
 }
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 const store = createStore(
   combineReducers({
     task: taskReducer,
   }),
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+  composeEnhancers(applyMiddleware(thunk)),
 )
 
 ReactDOM.render(

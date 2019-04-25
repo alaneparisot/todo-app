@@ -9,18 +9,13 @@ type Props = {
   tasks: Task[]
   isLoading: boolean
   onTaskStatusChange: (task: Task) => void
-  onTaskDelete: (taskId: string) => void
+  onTaskDelete: (task: Task) => void
 }
 
 export default ({ tasks, isLoading, onTaskStatusChange, onTaskDelete }: Props) => {
   const taskListItems: JSX.Element[] = tasks.map(
     (task: Task): JSX.Element => (
-      <TaskListItem
-        task={task}
-        onTaskStatusChange={onTaskStatusChange}
-        onTaskDelete={onTaskDelete}
-        key={task.id}
-      />
+      <TaskListItem task={task} onTaskStatusChange={onTaskStatusChange} onTaskDelete={onTaskDelete} key={task.id} />
     ),
   )
 

@@ -19,7 +19,7 @@ Here are the topics I planned to cover:
 - [x] Routing
   - [x] Lazy Loading (with `React.Suspense`)
 - [x] Redux
-  - [ ] Redux Thunk
+  - [x] Redux Thunk
   - [ ] Redux Saga
 - [ ] Unit Testing
 - [ ] Documentation

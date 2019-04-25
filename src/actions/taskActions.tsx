@@ -1,4 +1,7 @@
+import { ThunkAction, ThunkDispatch } from 'redux-thunk'
+
 import Task from '../types/Task'
+import db from '../db'
 
 export const ADD_TASK = 'ADD_TASK'
 export type ADD_TASK = typeof ADD_TASK
@@ -6,8 +9,8 @@ export type ADD_TASK = typeof ADD_TASK
 export const DELETE_TASK = 'DELETE_TASK'
 export type DELETE_TASK = typeof DELETE_TASK
 
-export const SET_TASKS = 'SET_TASKS'
-export type SET_TASKS = typeof SET_TASKS
+export const GET_TASKS = 'GET_TASKS'
+export type GET_TASKS = typeof GET_TASKS
 
 export const TOGGLE_TASK = 'TOGGLE_TASK'
 export type TOGGLE_TASK = typeof TOGGLE_TASK
@@ -26,8 +29,8 @@ export interface DeleteTask {
   }
 }
 
-export interface SetTasks {
-  type: SET_TASKS
+export interface GetTasks {
+  type: GET_TASKS
   payload: {
     tasks: Task[]
   }
@@ -41,33 +44,80 @@ export interface ToggleTask {
   }
 }
 
-export type TaskAction = AddTask | DeleteTask | SetTasks | ToggleTask
+export type TaskAction = AddTask | DeleteTask | GetTasks | ToggleTask
 
-export const addTask = (task: Task): AddTask => ({
-  type: ADD_TASK,
-  payload: {
-    task,
-  },
-})
+export const addTask = (description: string): ThunkAction<Promise<void>, {}, {}, AddTask> => async (
+  dispatch: ThunkDispatch<{}, {}, AddTask>,
+): Promise<void> => {
+  const newTask = {
+    description,
+    isDone: false,
+  }
+  try {
+    const docRef = await db.collection('tasks').add(newTask)
+    dispatch({
+      type: ADD_TASK,
+      payload: {
+        task: { id: docRef.id, ...newTask },
+      },
+    })
+  } catch (error) {
+    console.error('Error adding document: ', error)
+  }
+}
 
-export const deleteTask = (id: string): DeleteTask => ({
-  type: DELETE_TASK,
-  payload: {
-    id,
-  },
-})
+export const deleteTask = (task: Task): ThunkAction<Promise<void>, {}, {}, DeleteTask> => async (
+  dispatch: ThunkDispatch<{}, {}, DeleteTask>,
+): Promise<void> => {
+  try {
+    await db
+      .collection('tasks')
+      .doc(task.id)
+      .delete()
+    dispatch({
+      type: DELETE_TASK,
+      payload: {
+        id: task.id,
+      },
+    })
+  } catch (error) {
+    console.error('Error removing document: ', error)
+  }
+}
 
-export const setTasks = (tasks: Task[]): SetTasks => ({
-  type: SET_TASKS,
-  payload: {
-    tasks,
-  },
-})
+export const getTasks = (): ThunkAction<Promise<void>, {}, {}, GetTasks> => async (
+  dispatch: ThunkDispatch<{}, {}, GetTasks>,
+): Promise<void> => {
+  try {
+    const querySnapshot = await db.collection('tasks').get()
+    dispatch({
+      type: GET_TASKS,
+      payload: {
+        tasks: querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Task)),
+      },
+    })
+  } catch (error) {
+    console.error('Error getting documents: ', error)
+  }
+}
 
-export const toggleTask = (id: string, isDone: boolean): ToggleTask => ({
-  type: TOGGLE_TASK,
-  payload: {
-    id,
-    isDone,
-  },
-})
+export const toggleTask = (task: Task): ThunkAction<Promise<void>, {}, {}, ToggleTask> => async (
+  dispatch: ThunkDispatch<{}, {}, ToggleTask>,
+): Promise<void> => {
+  const isDone = !task.isDone
+  try {
+    await db
+      .collection('tasks')
+      .doc(task.id)
+      .update({ isDone })
+    dispatch({
+      type: TOGGLE_TASK,
+      payload: {
+        id: task.id,
+        isDone,
+      },
+    })
+  } catch (error) {
+    console.error('Error updating document: ', error)
+  }
+}
