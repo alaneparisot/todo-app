@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from 'react'
 
-import Task from '../types/Task'
 import Loading from '../components/Loading'
+import Task from '../types/Task'
 
 const TaskListItem = lazy(() => import('./TaskListItem'))
 

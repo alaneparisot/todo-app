@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Link, match as Match } from 'react-router-dom'
 
-import Task from '../types/Task'
 import Loading from '../components/Loading'
+import Task from '../types/Task'
 import db from '../db'
 
 type Props = {
@@ -45,7 +45,7 @@ export default ({ match }: Props) => {
         <p>{selectedTask === undefined ? <Loading /> : 'Task not found... 😔'}</p>
       )}
 
-      <Link to='/tasks'>Go to task list</Link>
+      <Link to="/tasks">Go to task list</Link>
     </>
   )
 }

@@ -1,50 +1,8 @@
 import { ThunkAction, ThunkDispatch } from 'redux-thunk'
 
-import Task from '../types/Task'
+import Task, { AddTask, DeleteTask, GetTasks, ToggleTask } from '../types/Task'
+import { ADD_TASK, DELETE_TASK, GET_TASKS, TOGGLE_TASK } from '../constants/taskActionTypes'
 import db from '../db'
-
-export const ADD_TASK = 'ADD_TASK'
-export type ADD_TASK = typeof ADD_TASK
-
-export const DELETE_TASK = 'DELETE_TASK'
-export type DELETE_TASK = typeof DELETE_TASK
-
-export const GET_TASKS = 'GET_TASKS'
-export type GET_TASKS = typeof GET_TASKS
-
-export const TOGGLE_TASK = 'TOGGLE_TASK'
-export type TOGGLE_TASK = typeof TOGGLE_TASK
-
-export interface AddTask {
-  type: ADD_TASK
-  payload: {
-    task: Task
-  }
-}
-
-export interface DeleteTask {
-  type: DELETE_TASK
-  payload: {
-    id: string
-  }
-}
-
-export interface GetTasks {
-  type: GET_TASKS
-  payload: {
-    tasks: Task[]
-  }
-}
-
-export interface ToggleTask {
-  type: TOGGLE_TASK
-  payload: {
-    id: string
-    isDone: boolean
-  }
-}
-
-export type TaskAction = AddTask | DeleteTask | GetTasks | ToggleTask
 
 export const addTask = (description: string): ThunkAction<Promise<void>, {}, {}, AddTask> => async (
   dispatch: ThunkDispatch<{}, {}, AddTask>,

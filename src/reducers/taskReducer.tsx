@@ -1,8 +1,7 @@
 import { Reducer } from 'redux'
 
-import TaskState from '../types/TaskState'
-import Task from '../types/Task'
-import * as taskActions from '../actions/taskActions'
+import Task, { TaskAction, TaskState } from '../types/Task'
+import { ADD_TASK, DELETE_TASK, GET_TASKS, TOGGLE_TASK } from '../constants/taskActionTypes'
 
 const initialState: TaskState = {
   tasks: [],
@@ -10,22 +9,22 @@ const initialState: TaskState = {
 
 export default ((state = initialState, action): TaskState => {
   switch (action.type) {
-    case taskActions.ADD_TASK:
+    case ADD_TASK:
       return {
         ...state,
         tasks: [...state.tasks, action.payload.task],
       }
-    case taskActions.DELETE_TASK:
+    case DELETE_TASK:
       return {
         ...state,
         tasks: state.tasks.filter((task: Task) => task.id !== action.payload.id),
       }
-    case taskActions.GET_TASKS:
+    case GET_TASKS:
       return {
         ...state,
         tasks: action.payload.tasks,
       }
-    case taskActions.TOGGLE_TASK:
+    case TOGGLE_TASK:
       return {
         ...state,
         tasks: [...state.tasks].map((task: Task) => {
@@ -41,4 +40,4 @@ export default ((state = initialState, action): TaskState => {
     default:
       return state
   }
-}) as Reducer<TaskState, taskActions.TaskAction>
+}) as Reducer<TaskState, TaskAction>

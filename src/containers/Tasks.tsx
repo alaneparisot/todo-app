@@ -4,11 +4,11 @@ import { History } from 'history'
 import { connect } from 'react-redux'
 import { ThunkDispatch } from 'redux-thunk'
 
-import Task from '../types/Task'
 import TaskList from '../components/TaskList'
 import Loading from '../components/Loading'
 import StoreState from '../types/StoreState'
-import * as taskActions from '../actions/taskActions'
+import Task, { TaskAction } from '../types/Task'
+import { addTask, deleteTask, getTasks, toggleTask } from '../actions/taskActions'
 
 const TaskCreation = lazy(() => import('../components/TaskCreation'))
 const TaskDetail = lazy(() => import('../components/TaskDetail'))
@@ -93,11 +93,11 @@ const mapStateToProps = (state: StoreState) => ({
   tasks: state.task.tasks,
 })
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, taskActions.TaskAction>) => ({
-  onAddTask: (description: string) => dispatch(taskActions.addTask(description)),
-  onDeleteTask: (task: Task) => dispatch(taskActions.deleteTask(task)),
-  onGetTasks: () => dispatch(taskActions.getTasks()),
-  onToggleTask: (task: Task) => dispatch(taskActions.toggleTask(task)),
+const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, TaskAction>) => ({
+  onAddTask: (description: string) => dispatch(addTask(description)),
+  onDeleteTask: (task: Task) => dispatch(deleteTask(task)),
+  onGetTasks: () => dispatch(getTasks()),
+  onToggleTask: (task: Task) => dispatch(toggleTask(task)),
 })
 
 export default connect(
