@@ -12,7 +12,13 @@ type Props = {
 export default ({ task, onTaskStatusChange, onTaskDelete }: Props) => (
   <li>
     <Link to={`/tasks/${task.id}`}>{task.description}</Link>
-    <input type='checkbox' checked={task.isDone} onChange={() => onTaskStatusChange(task)} />
-    {task.isDone && <button onClick={() => onTaskDelete(task.id)}>Delete</button>}
+    <input
+      type="checkbox"
+      checked={task.isDone}
+      onChange={() => onTaskStatusChange(task)}
+    />
+    {task.isDone && (
+      <button onClick={() => onTaskDelete(task.id)}>Delete</button>
+    )}
   </li>
 )

@@ -24,3 +24,4 @@ yarn-error.log*
 
 src/db/firebaseConfig.json
 vim.exe.stackdump
+/.vscode
