@@ -12,10 +12,11 @@ describe('Task reducer', () => {
   test('should add task', () => {
     const [task1] = buildTasks()
     const action: AddTask = { type: ADD_TASK, payload: { task: task1 } }
+    const initialState = { tasks: [] }
     const expectedState = { tasks: [task1] }
     const computedState = taskReducer(undefined, action)
     expect(computedState).toEqual(expectedState)
-    expect(computedState.tasks[0]).not.toBe(task1)
+    expect(computedState.tasks).not.toBe(initialState.tasks)
   })
 
   test('should delete task', () => {
@@ -23,14 +24,19 @@ describe('Task reducer', () => {
     const action: DeleteTask = { type: DELETE_TASK, payload: { id: task2.id } }
     const initialState = { tasks: [task1, task2, task3] }
     const expectedState = { tasks: [task1, task3] }
-    expect(taskReducer(initialState, action)).toEqual(expectedState)
+    const computedState = taskReducer(initialState, action)
+    expect(computedState).toEqual(expectedState)
+    expect(computedState.tasks).not.toBe(initialState.tasks)
   })
 
   test('should get tasks', () => {
     const tasks = buildTasks()
     const action: GetTasks = { type: GET_TASKS, payload: { tasks } }
+    const initialState = { tasks: [] }
     const expectedState = { tasks }
-    expect(taskReducer(undefined, action)).toEqual(expectedState)
+    const computedState = taskReducer(undefined, action)
+    expect(computedState).toEqual(expectedState)
+    expect(computedState.tasks).not.toBe(initialState.tasks)
   })
 
   test('should toggle task', () => {
@@ -39,7 +45,9 @@ describe('Task reducer', () => {
     const initialState = { tasks: [task1, task2, task3] }
     const newTask3 = { ...task3, isDone: !task3.isDone }
     const expectedState = { tasks: [task1, task2, newTask3] }
-    expect(taskReducer(initialState, action)).toEqual(expectedState)
+    const computedState = taskReducer(initialState, action)
+    expect(computedState).toEqual(expectedState)
+    expect(computedState.tasks).not.toBe(initialState.tasks)
   })
 })
 
