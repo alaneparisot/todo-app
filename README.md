@@ -22,6 +22,10 @@ Here are the topics I planned to cover:
   - [x] Redux Thunk
   - [ ] Redux Saga
 - [ ] Unit Testing
+  - [x] Actions
+  - [x] Reducers
+  - [ ] Containers
+  - [ ] Components
 - [ ] Documentation
 - [ ] Forms (with Formik)
 - [ ] Authentication
