@@ -32,20 +32,15 @@ export default ({ onTaskCreate }: Props) => {
       <form onSubmit={handleSubmit} onReset={handleReset}>
         <label>
           Description:
-          <input
-            type='text'
-            placeholder='Visit California 🌉'
-            value={description}
-            onChange={handleDescriptionChange}
-          />
+          <input type="text" placeholder="Visit California" value={description} onChange={handleDescriptionChange} />
         </label>
-        <input type='submit' value='Create' disabled={isCreating} />
-        <input type='reset' value='Clear' />
+        <input type="submit" value="Create" disabled={isCreating} />
+        <input type="reset" value="Clear" />
         {isCreating && <span>💾 Creation in progress...</span>}
       </form>
 
       <p>
-        <Link to='/tasks'>Go to task list</Link>
+        <Link to="/tasks">Go to task list</Link>
       </p>
     </>
   )

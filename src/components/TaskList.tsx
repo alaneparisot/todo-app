@@ -30,8 +30,8 @@ export default ({ tasks, isLoading, onTaskStatusChange, onTaskDelete }: Props) =
           <ul>{taskListItems}</ul>
         </Suspense>
       ) : (
-        <p>
-          Seems like you achieved all your tasks 🎉 <em>Add a new one!</em>
+        <p className="no-tasks">
+          No tasks found... <em>Create a new one!</em>
         </p>
       )}
     </>
